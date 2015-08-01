@@ -128,6 +128,7 @@ class FZF
     @shr_mtx  = Mutex.new
     @expect   = false
     @print_query = false
+    @builtin_command = "find . -path './.*' -prune -o -path '*/.*' -prune -o -type f -print -o -type l -print 2> /dev/null | sed 's/^..//'"
 
     argv =
       if opts = ENV['FZF_DEFAULT_OPTS']
@@ -639,7 +640,7 @@ class FZF
         if default_command && !default_command.empty?
           IO.popen(default_command)
         elsif !`which find`.empty?
-          IO.popen("find * -path '*/\\.*' -prune -o -type f -print -o -type l -print 2> /dev/null")
+          IO.popen(@builtin_command)
         else
           exit 1
         end
